@@ -22,6 +22,7 @@ const replayAudioAfterSeconds = document.getElementById(
 const useCustomSoundCheckbox = document.getElementById("useCustomSound");
 const customSoundEl = document.getElementById("customSound");
 const timerAlwaysOnTopCheckbox = document.getElementById("timerAlwaysOnTop");
+const organizationsList = document.getElementById("organizationsList");
 
 function createMobberEl(mobber) {
   const el = document.createElement("div");
@@ -117,25 +118,40 @@ loadMobbersFromGithubForm.addEventListener("submit", async event => {
   if (!token) {
     return;
   }
+  organizationsList.innerHTML = "";
 
   const orgsResponse = await fetch(
     `https://api.github.com/user/orgs?access_token=${token}`
   );
   const orgsJson = await orgsResponse.json();
-  const membersUrls = orgsJson.map(
-    org => org.members_url.replace("{/member}", "") + `?access_token=${token}`
-  );
+  const organizationsListItems = orgsJson.map(organization => {
+    const button = document.createElement("button");
+    button.textContent = `Add mobbers from ${organization.login}`;
+    button.className = "btn";
 
-  membersUrls.forEach(async membersUrl => {
-    const membersResponse = await fetch(membersUrl);
-    const membersJson = await membersResponse.json();
-    const mobbers = membersJson.map(teamMember => ({
-      image: teamMember.avatar_url,
-      name: teamMember.login,
-      disabled: true
-    }));
-    mobbers.forEach(mobber => ipc.send("addMobber", mobber));
+    button.addEventListener("click", async () => {
+      const membersUrl =
+        organization.members_url.replace("{/member}", "") +
+        `?access_token=${token}`;
+      const membersResponse = await fetch(membersUrl);
+      const membersJson = await membersResponse.json();
+      const mobbers = membersJson.map(teamMember => ({
+        image: teamMember.avatar_url,
+        name: teamMember.login,
+        disabled: true
+      }));
+      mobbers.forEach(mobber => ipc.send("addMobber", mobber));
+    });
+
+    const li = document.createElement("li");
+    li.appendChild(button);
+    return li;
   });
+
+  organizationsList.innerHTML = "";
+  organizationsListItems.forEach(listItem =>
+    organizationsList.appendChild(listItem)
+  );
 });
 
 fullscreenSecondsEl.addEventListener("change", _ => {
