@@ -68,6 +68,12 @@ function getPrepareCommitMessage(stateFilePath) {
 const fs = require("fs");
 
 const message = fs.readFileSync(process.argv[2], "utf8").trim();
+
+if(message.indexOf("Co-authored-by") !== -1) {
+    console.log("Already has co-authors, to adjust, redo the commit");
+    process.exit(0);
+}
+
 const mobtimerState = JSON.parse(
     fs.readFileSync(
     "${path.normalize(stateFilePath).replace(/\\/g, "\\\\")}",
