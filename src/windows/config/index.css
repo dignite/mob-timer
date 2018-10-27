@@ -1,4 +1,4 @@
-@import url('../theme.css');
+@import url("../theme.css");
 
 body {
   margin: 0;
@@ -49,7 +49,7 @@ input {
 }
 
 .mobber.disabled .image {
-  opacity: .3;
+  opacity: 0.3;
 }
 
 .mobber.disabled .name {
