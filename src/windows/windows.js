@@ -1,15 +1,14 @@
-const electron = require('electron')
-const windowSnapper = require('./window-snapper')
+const electron = require("electron");
 
-let timerWindow, configWindow, fullscreenWindow
-let snapThreshold, secondsUntilFullscreen, timerAlwaysOnTop
+let timerWindow, configWindow, fullscreenWindow;
+let secondsUntilFullscreen, timerAlwaysOnTop;
 
 exports.createTimerWindow = () => {
   if (timerWindow) {
-    return
+    return;
   }
 
-  let {width, height} = electron.screen.getPrimaryDisplay().workAreaSize
+  let { width, height } = electron.screen.getPrimaryDisplay().workAreaSize;
   timerWindow = new electron.BrowserWindow({
     x: width - 220,
     y: height - 90,
@@ -18,119 +17,97 @@ exports.createTimerWindow = () => {
     resizable: false,
     alwaysOnTop: timerAlwaysOnTop,
     frame: false,
-    icon: __dirname + '/../../src/windows/img/icon.png'
-  })
+    icon: __dirname + "/../../src/windows/img/icon.png"
+  });
 
-  timerWindow.loadURL(`file://${__dirname}/timer/index.html`)
-  timerWindow.on('closed', _ => timerWindow = null)
+  timerWindow.loadURL(`file://${__dirname}/timer/index.html`);
+  timerWindow.on("closed", _ => (timerWindow = null));
 
   let getCenter = bounds => {
     return {
-      x: bounds.x + (bounds.width / 2),
-      y: bounds.y + (bounds.height / 2)
-    }
-  }
-
-  timerWindow.on('move', e => {
-    if (snapThreshold <= 0) {
-      return
-    }
-
-    let getCenter = bounds => {
-      return {
-        x: bounds.x + (bounds.width / 2),
-        y: bounds.y + (bounds.height / 2)
-      }
-    }
-
-    let windowBounds = timerWindow.getBounds()
-    let screenBounds = electron.screen.getDisplayNearestPoint(getCenter(windowBounds)).workArea
-
-    let snapTo = windowSnapper(windowBounds, screenBounds, snapThreshold)
-    if (snapTo.x != windowBounds.x || snapTo.y != windowBounds.y) {
-      timerWindow.setPosition(snapTo.x, snapTo.y)
-    }
-  })
-}
+      x: bounds.x + bounds.width / 2,
+      y: bounds.y + bounds.height / 2
+    };
+  };
+};
 
 exports.showConfigWindow = () => {
   if (configWindow) {
-    configWindow.show()
-    return
+    configWindow.show();
+    return;
   }
-  exports.createConfigWindow()
-}
+  exports.createConfigWindow();
+};
 
 exports.createConfigWindow = () => {
   if (configWindow) {
-    return
+    return;
   }
 
   configWindow = new electron.BrowserWindow({
     width: 420,
     height: 500,
     autoHideMenuBar: true
-  })
+  });
 
-  configWindow.loadURL(`file://${__dirname}/config/index.html`)
-  configWindow.on('closed', _ => configWindow = null)
-}
+  configWindow.loadURL(`file://${__dirname}/config/index.html`);
+  configWindow.on("closed", _ => (configWindow = null));
+};
 
 exports.createFullscreenWindow = () => {
   if (fullscreenWindow) {
-    return
+    return;
   }
 
-  let {width, height} = electron.screen.getPrimaryDisplay().workAreaSize
+  let { width, height } = electron.screen.getPrimaryDisplay().workAreaSize;
   fullscreenWindow = new electron.BrowserWindow({
     width,
     height,
     resizable: false,
     alwaysOnTop: true,
     frame: false
-  })
+  });
 
-  fullscreenWindow.loadURL(`file://${__dirname}/fullscreen/index.html`)
-  fullscreenWindow.on('closed', _ => fullscreenWindow = null)
-}
+  fullscreenWindow.loadURL(`file://${__dirname}/fullscreen/index.html`);
+  fullscreenWindow.on("closed", _ => (fullscreenWindow = null));
+};
 
 exports.closeFullscreenWindow = () => {
   if (fullscreenWindow) {
-    fullscreenWindow.close()
+    fullscreenWindow.close();
   }
-}
+};
 
 exports.dispatchEvent = (event, data) => {
-  if (event === 'configUpdated') {
-    exports.setConfigState(data)
+  if (event === "configUpdated") {
+    exports.setConfigState(data);
   }
-  if (event === 'alert' && data == secondsUntilFullscreen) {
-    exports.createFullscreenWindow()
+  if (event === "alert" && data == secondsUntilFullscreen) {
+    exports.createFullscreenWindow();
   }
-  if (event === 'stopAlerts') {
-    exports.closeFullscreenWindow()
+  if (event === "stopAlerts") {
+    exports.closeFullscreenWindow();
   }
 
   if (timerWindow) {
-    timerWindow.webContents.send(event, data)
+    timerWindow.webContents.send(event, data);
   }
   if (configWindow) {
-    configWindow.webContents.send(event, data)
+    configWindow.webContents.send(event, data);
   }
   if (fullscreenWindow) {
-    fullscreenWindow.webContents.send(event, data)
+    fullscreenWindow.webContents.send(event, data);
   }
-}
+};
 
 exports.setConfigState = data => {
-  var needToRecreateTimerWindow = timerAlwaysOnTop != data.timerAlwaysOnTop
+  var needToRecreateTimerWindow = timerAlwaysOnTop != data.timerAlwaysOnTop;
 
-  snapThreshold = data.snapThreshold
-  secondsUntilFullscreen = data.secondsUntilFullscreen
-  timerAlwaysOnTop = data.timerAlwaysOnTop
+  secondsUntilFullscreen = data.secondsUntilFullscreen;
+  timerAlwaysOnTop = data.timerAlwaysOnTop;
 
   if (needToRecreateTimerWindow && timerWindow) {
-    timerWindow.close()
-    exports.createTimerWindow()
+    timerWindow.close();
+    exports.createTimerWindow();
   }
-}
+};
