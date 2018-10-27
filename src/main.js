@@ -1,10 +1,11 @@
 const electron = require("electron");
-const { app, ipcMain: ipc } = electron;
+const { app, ipcMain: ipc, dialog } = electron;
 
 let windows = require("./windows/windows");
 let TimerState = require("./state/timer-state");
 let writeState = require("./state/write-state");
 let readState = require("./state/read-state");
+const { addAsGlobalHook } = require("./git-integration/co-authors-githook");
 
 let timerState = new TimerState();
 
@@ -35,6 +36,10 @@ ipc.on("configure", _ => {
   windows.closeFullscreenWindow();
 });
 ipc.on("addMobber", (event, mobber) => timerState.addMobber(mobber));
+ipc.on(
+  "addCoAuthorGitHook",
+  async () => await addAsGlobalHook(readState.getFilepath())
+);
 ipc.on("removeMobber", (event, mobber) => timerState.removeMobber(mobber));
 ipc.on("updateMobber", (event, mobber) => timerState.updateMobber(mobber));
 ipc.on("setSecondsPerTurn", (event, secondsPerTurn) =>

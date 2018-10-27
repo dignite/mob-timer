@@ -30,6 +30,7 @@
   },
   "dependencies": {
     "node-fetch": "^2.2.0",
+    "simple-git": "^1.106.0",
     "uuid": "^3.2.1"
   }
 }

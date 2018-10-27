@@ -23,6 +23,7 @@ const useCustomSoundCheckbox = document.getElementById("useCustomSound");
 const customSoundEl = document.getElementById("customSound");
 const timerAlwaysOnTopCheckbox = document.getElementById("timerAlwaysOnTop");
 const organizationsList = document.getElementById("organizationsList");
+const addCoAuthorGitHook = document.getElementById("addCoAuthorGitHook");
 
 function createMobberEl(mobber) {
   const el = document.createElement("div");
@@ -157,6 +158,10 @@ loadMobbersFromGithubForm.addEventListener("submit", async event => {
 fullscreenSecondsEl.addEventListener("change", _ => {
   ipc.send("setSecondsUntilFullscreen", fullscreenSecondsEl.value * 1);
 });
+
+addCoAuthorGitHook.addEventListener("click", () =>
+  ipc.send("addCoAuthorGitHook")
+);
 
 ipc.send("configWindowReady");
 
