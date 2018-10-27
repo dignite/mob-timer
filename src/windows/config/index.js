@@ -117,19 +117,17 @@ loadMobbersFromGithubForm.addEventListener("submit", async event => {
   if (!token) {
     return;
   }
-  await fetch(
+
+  const membersResponse = await fetch(
     `https://api.github.com/orgs/urbitassociates/members?access_token=${token}`
-  )
-    .then(res => res.json())
-    .then(teamMembers => {
-      teamMembers.forEach(teamMember => {
-        ipc.send("addMobber", {
-          image: teamMember.avatar_url,
-          name: teamMember.login,
-          disabled: true
-        });
-      });
-    });
+  );
+  const membersJson = await membersResponse.json();
+  const mobbers = membersJson.map(teamMember => ({
+    image: teamMember.avatar_url,
+    name: teamMember.login,
+    disabled: true
+  }));
+  mobbers.forEach(mobber => ipc.send("addMobber", mobber));
 });
 
 fullscreenSecondsEl.addEventListener("change", _ => {
