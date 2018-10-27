@@ -148,7 +148,7 @@ loadMobbersFromGithubForm.addEventListener("submit", async event => {
           teamMember.email || `${teamMember.login}@users.noreply.github.com`;
         return {
           image: teamMember.avatar_url,
-          name: teamMember.login,
+          name: teamMember.name || teamMember.login,
           disabled: true,
           githubAuthor: `${teamMember.name} <${email}>`
         };
