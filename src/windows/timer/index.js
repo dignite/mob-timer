@@ -60,13 +60,13 @@ ipc.on("rotated", (event, data) => {
     data.current = { name: "Add a mobber" };
   }
   currentPicEl.src = data.current.image || "../img/sad-cyclops.png";
-  currentEl.innerHTML = data.current.name;
+  currentEl.innerHTML = data.current.name.split(" ")[0];
 
   if (!data.next) {
     data.next = data.current;
   }
   nextPicEl.src = data.next.image || "../img/sad-cyclops.png";
-  nextEl.innerHTML = data.next.name;
+  nextEl.innerHTML = data.next.name.split(" ")[0];
 });
 
 ipc.on("paused", _ => {
