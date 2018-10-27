@@ -77,7 +77,7 @@ const mobtimerState = JSON.parse(
 
 const coAuthorTail = mobtimerState.mobbers
     .filter(mobber => !mobber.disabled)
-    .map(mobber => \`Co-authored-by: \${mobber.name}\`);
+    .map(mobber => \`Co-authored-by: \${mobber.githubAuthor || mobber.name}\`);
 
 if (!coAuthorTail.length) {
     console.log("No co-authors");
