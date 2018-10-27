@@ -1,10 +1,17 @@
 const ipc = require("electron").ipcRenderer;
 const { dialog } = require("electron").remote;
+const fetch = require("node-fetch");
 
 const mobbersEl = document.getElementById("mobbers");
 const minutesEl = document.getElementById("minutes");
 const addEl = document.getElementById("add");
+const githubAccessTokenElement = document.getElementById(
+  "githubAccessTokenElement"
+);
 const addMobberForm = document.getElementById("addMobberForm");
+const loadMobbersFromGithubForm = document.getElementById(
+  "loadMobbersFromGithubForm"
+);
 const fullscreenSecondsEl = document.getElementById("fullscreen-seconds");
 const alertAudioCheckbox = document.getElementById("alertAudio");
 const replayAudioContainer = document.getElementById("replayAudioContainer");
@@ -102,6 +109,27 @@ addMobberForm.addEventListener("submit", event => {
   }
   ipc.send("addMobber", { name: value });
   addEl.value = "";
+});
+
+loadMobbersFromGithubForm.addEventListener("submit", async event => {
+  event.preventDefault();
+  let token = githubAccessTokenElement.value.trim();
+  if (!token) {
+    return;
+  }
+  await fetch(
+    `https://api.github.com/orgs/urbitassociates/members?access_token=${token}`
+  )
+    .then(res => res.json())
+    .then(teamMembers => {
+      teamMembers.forEach(teamMember => {
+        ipc.send("addMobber", {
+          image: teamMember.avatar_url,
+          name: teamMember.login,
+          disabled: true
+        });
+      });
+    });
 });
 
 fullscreenSecondsEl.addEventListener("change", _ => {
