@@ -138,7 +138,7 @@ loadMobbersFromGithubForm.addEventListener("submit", async event => {
       const membersJson = await membersResponse.json();
       const membersInfoJson = await Promise.all(
         membersJson.map(async member => {
-          const response = await fetch(member.url);
+          const response = await fetch(member.url + `?access_token=${token}`);
           const json = await response.json();
           return json;
         })
