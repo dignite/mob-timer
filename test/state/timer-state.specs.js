@@ -162,7 +162,7 @@ describe("timer-state", () => {
       var event = assertEvent("configUpdated");
       assert.deepEqual(event.data.mobbers, []);
       assert.equal(event.data.secondsPerTurn, 600);
-      assert.equal(event.data.secondsUntilFullscreen, 30);
+      assert.equal(event.data.secondsUntilFullscreen, 10);
       assert.equal(event.data.alertSound, null);
       assert.deepEqual(event.data.alertSoundTimes, []);
     });

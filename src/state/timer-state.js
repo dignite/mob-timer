@@ -8,7 +8,7 @@ class TimerState {
     }
     this.secondsPerTurn = 600;
     this.mobbers = new Mobbers();
-    this.secondsUntilFullscreen = 30;
+    this.secondsUntilFullscreen = 10;
     this.alertSound = null;
     this.alertSoundTimes = [];
     this.timerAlwaysOnTop = true;
