@@ -136,11 +136,23 @@ loadMobbersFromGithubForm.addEventListener("submit", async event => {
         `?access_token=${token}`;
       const membersResponse = await fetch(membersUrl);
       const membersJson = await membersResponse.json();
-      const mobbers = membersJson.map(teamMember => ({
-        image: teamMember.avatar_url,
-        name: teamMember.login,
-        disabled: true
-      }));
+      const membersInfoJson = await Promise.all(
+        membersJson.map(async member => {
+          const response = await fetch(member.url);
+          const json = await response.json();
+          return json;
+        })
+      );
+      const mobbers = membersInfoJson.map(teamMember => {
+        const email =
+          teamMember.email || `${teamMember.login}@users.noreply.github.com`;
+        return {
+          image: teamMember.avatar_url,
+          name: teamMember.login,
+          disabled: true,
+          githubAuthor: `${teamMember.name} <${email}>`
+        };
+      });
       mobbers.forEach(mobber => ipc.send("addMobber", mobber));
     });
 
