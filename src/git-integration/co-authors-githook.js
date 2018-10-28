@@ -104,7 +104,7 @@ const coAuthorTail = mobtimerState.mobbers
     .map(mobber => \`Co-authored-by: \${mobber.githubAuthor || mobber.name}\`);
 
 if (!coAuthorTail.length) {
-    log("No mobbers active are active!");
+    log("No mobbers active!");
     process.exit(0);
 }
 
