@@ -65,6 +65,11 @@ function getGlobalHooksLocation() {
 function getPrepareCommitMessage(stateFilePath) {
   return `#!/usr/bin/env node
 
+console.log("\\n\\tCo-author prepare-commit-msg hook initiated!");
+console.log("\\tThis plugin will add active mobbers in mob timer as Co-authors recognized by github.");
+console.log("\\tTo opt out, have no active mobbers or add '[solo]' to the commit msg.\\n");
+
+
 const fs = require("fs");
 
 const message = fs.readFileSync(process.argv[2], "utf8").trim();
@@ -72,6 +77,14 @@ const message = fs.readFileSync(process.argv[2], "utf8").trim();
 if(message.indexOf("Co-authored-by") !== -1) {
     console.log("Already has co-authors, to adjust, redo the commit");
     process.exit(0);
+}
+
+
+if(message.indexOf("[solo]") !== -1) {
+  console.log("Tag [solo] found, not adding co-authors!");
+  const messageWithoutSoloTag = message.replace("[solo]", "").trim();
+  fs.writeFileSync(process.argv[2], messageWithoutSoloTag);
+  process.exit(0);
 }
 
 const mobtimerState = JSON.parse(
@@ -86,15 +99,13 @@ const coAuthorTail = mobtimerState.mobbers
     .map(mobber => \`Co-authored-by: \${mobber.githubAuthor || mobber.name}\`);
 
 if (!coAuthorTail.length) {
-    console.log("No co-authors");
+    console.log("No mobbers active are active!");
     process.exit(0);
 }
 
 const newCommitMessage = \`\${message}\\n\\n\\n\${coAuthorTail.join("\\n")}\`;
 
-console.log("\\n--- Added co-authors, see new message below ---");
-console.log(newCommitMessage);
-console.log("--- Added co-authors, see new message above ---\\n");
+console.log("\\t" + coAuthorTail.join("\\n\\t") + "\\n")
 
 fs.writeFileSync(process.argv[2], newCommitMessage);
 
