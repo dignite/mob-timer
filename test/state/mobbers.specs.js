@@ -1,6 +1,11 @@
 let Mobbers = require("../../src/state/mobbers");
 let assert = require("assert");
 
+const dummyMobbers = {
+  current: { name: "Current mobber" },
+  next: { name: "Next mobber" }
+};
+
 describe("Mobbers", () => {
   let mobbers;
 
@@ -44,9 +49,9 @@ describe("Mobbers", () => {
   });
 
   describe("getCurrentAndNextMobbers", () => {
-    it("return null values if there are no mobbers", () => {
+    it("return dummy mobbers if there are no mobbers", () => {
       let result = mobbers.getCurrentAndNextMobbers();
-      assert.deepEqual(result, { current: null, next: null });
+      assert.deepEqual(result, dummyMobbers);
     });
 
     it("return the same mobber for current and next if there is only one mobber", () => {
@@ -88,7 +93,7 @@ describe("Mobbers", () => {
     it("should do nothing when there are no mobbers", () => {
       mobbers.rotate();
       let result = mobbers.getCurrentAndNextMobbers();
-      assert.deepEqual(result, { current: null, next: null });
+      assert.deepEqual(result, dummyMobbers);
     });
 
     it("should do nothing when there is only one mobber", () => {

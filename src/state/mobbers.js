@@ -24,7 +24,10 @@ class Mobbers {
   getCurrentAndNextMobbers() {
     let active = this.getActiveMobbers();
     if (!active.length) {
-      return { current: null, next: null };
+      return {
+        current: { name: "Current mobber" },
+        next: { name: "Next mobber" }
+      };
     }
 
     return {

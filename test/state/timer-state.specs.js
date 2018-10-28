@@ -33,7 +33,7 @@ describe("timer-state", () => {
 
     it("should publish a rotated event", () => {
       var event = assertEvent("rotated");
-      assert.deepEqual(event.data, { current: null, next: null });
+      assert.deepEqual(Object.keys(event.data), ["current", "next"]);
     });
 
     it("should publish a turnEnded event", () => {
