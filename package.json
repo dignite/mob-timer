@@ -61,7 +61,8 @@
     "eslint-plugin-promise": "^4.0.1",
     "jest": "^24.8.0",
     "prettier": "^1.16.4",
-    "sinon": "^7.1.1"
+    "sinon": "^7.1.1",
+    "spectron": "^5.0.0"
   },
   "dependencies": {
     "debounce": "^1.2.0",

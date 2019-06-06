@@ -7,6 +7,9 @@ const stateFile = path.join(mobTimerDir, "state.json");
 const oldStateFile = path.join(os.tmpdir(), "state.json");
 
 function read() {
+  if (process.env.RUNNING_IN_SPECTRON === "1") {
+    return {};
+  }
   if (fs.existsSync(stateFile)) {
     return JSON.parse(fs.readFileSync(stateFile, "utf-8"));
   }
@@ -17,6 +20,9 @@ function read() {
 }
 
 function write(state) {
+  if (process.env.RUNNING_IN_SPECTRON === "1") {
+    return;
+  }
   if (!fs.existsSync(mobTimerDir)) {
     fs.mkdirSync(mobTimerDir);
   }
