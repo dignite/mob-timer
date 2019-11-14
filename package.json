@@ -56,6 +56,7 @@
     "electron": "^7.0.1",
     "electron-packager": "^14.1.0",
     "electron-releases": "^3.274.0",
+    "electron-reload": "^1.5.0",
     "eslint": "^6.1.0",
     "eslint-config-prettier": "^6.0.0",
     "eslint-plugin-import": "^2.18.2",
@@ -68,6 +69,7 @@
     "sinon": "^7.4.1"
   },
   "dependencies": {
+    "electron-reload": "^1.5.0",
     "debounce": "^1.2.0",
     "pretty-checkbox": "^3.0.3",
     "typeface-work-sans": "0.0.72",

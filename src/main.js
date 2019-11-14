@@ -1,4 +1,5 @@
 const electron = require("electron");
+
 const { app, ipcMain: ipc } = electron;
 
 let windows = require("./windows/windows");
@@ -71,4 +72,17 @@ app.on("window-all-closed", function() {
 
 app.on("activate", function() {
   windows.createTimerWindow();
+});
+
+// Electron Reload Setup
+const electronReload = require("electron-reload");
+const pathToElectronExecutable = require(`${__dirname}/../node_modules/electron`);
+
+electronReload(`${__dirname}/state`, {
+  forceHardReset: true,
+  electron: pathToElectronExecutable
+});
+
+electronReload(__dirname, {
+  electron: pathToElectronExecutable
 });
